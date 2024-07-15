@@ -11,7 +11,7 @@ const cors = require("cors");
 app.use(cors({ origin: true }));
 app.use(express.json());
 
-const uri = process.env.DATABASE_URL;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env}@cluster0.2g6iibi.mongodb.net/nurseryDB?retryWrites=true&w=majority&appName=Cluster0`;
 
 const client = new MongoClient(uri, {
   // useNewUrlParser: true,
