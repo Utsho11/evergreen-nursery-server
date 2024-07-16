@@ -1,22 +1,18 @@
-require("dotenv").config();
 const express = require("express");
+require("dotenv").config();
 const httpStatus = require("http-status");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
 const port = process.env.PORT || 5000;
 
 const cors = require("cors");
 
-app.use(cors({ origin: true }));
+app.use(cors({ origin: ["https://evergreen-nursery-client.vercel.app"] }));
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.2g6iibi.mongodb.net/nurseryDB?retryWrites=true&w=majority&appName=Cluster0`;
 
 const client = new MongoClient(uri, {
-  // useNewUrlParser: true,
-  // useUnifiedTopology: true,
-  // serverApi: ServerApiVersion.v1,
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
@@ -25,7 +21,6 @@ const client = new MongoClient(uri, {
 });
 
 const run = async () => {
-  await client.connect(); // Ensure the client connects to the database
   try {
     const db = client.db("nurseryDB");
     const productsCollection = db.collection("products");
@@ -203,28 +198,6 @@ const run = async () => {
         });
       }
     });
-
-    // payment
-    // app.post("/create-payment-intent", async (req, res) => {
-    //   const { total } = req.body;
-    //   const amount = total * 100;
-
-    //   console.log({ total });
-
-    //   // Create a PaymentIntent with the order amount and currency
-    //   const paymentIntent = await stripe.paymentIntents.create({
-    //     amount: amount,
-    //     currency: "usd",
-    //     automatic_payment_methods: {
-    //       enabled: true,
-    //     },
-    //     payment_method_types: ["card"],
-    //   });
-
-    //   res.send({
-    //     clientSecret: paymentIntent.client_secret,
-    //   });
-    // });
   } finally {
     // Ensure the client will close when you finish/error
     // Uncomment the following line if you want to close the connection
