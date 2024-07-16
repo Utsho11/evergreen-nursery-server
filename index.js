@@ -31,7 +31,7 @@ const run = async () => {
     const productsCollection = db.collection("products");
     const categoryCollection = db.collection("category");
 
-    app.get("/api/products", async (req, res) => {
+    app.get("/products", async (req, res) => {
       try {
         const page = parseInt(req.query.page) || null;
         const pageSize = parseInt(req.query.pageSize) || null;
@@ -72,7 +72,7 @@ const run = async () => {
       }
     });
 
-    app.get("/api/products/:id", async (req, res) => {
+    app.get("/products/:id", async (req, res) => {
       try {
         const id = req.params.id;
 
@@ -107,7 +107,7 @@ const run = async () => {
       }
     });
 
-    app.post("/api/products", async (req, res) => {
+    app.post("/products", async (req, res) => {
       try {
         const newProduct = req.body;
         const result = await productsCollection.insertOne(newProduct);
@@ -125,7 +125,7 @@ const run = async () => {
       }
     });
 
-    app.put("/api/products/:id", async (req, res) => {
+    app.put("/products/:id", async (req, res) => {
       try {
         const id = new ObjectId(req.params.id);
 
@@ -148,7 +148,7 @@ const run = async () => {
       }
     });
 
-    app.delete("/api/products/:id", async (req, res) => {
+    app.delete("/products/:id", async (req, res) => {
       try {
         const id = new ObjectId(req.params.id);
         const result = await productsCollection.deleteOne({ _id: id });
@@ -165,7 +165,7 @@ const run = async () => {
       }
     });
 
-    app.get("/api/search", async (req, res) => {
+    app.get("/search", async (req, res) => {
       const { title } = req.query;
 
       console.log(title);
@@ -191,7 +191,7 @@ const run = async () => {
       }
     });
 
-    app.get("/api/categories", async (req, res) => {
+    app.get("/categories", async (req, res) => {
       try {
         const categories = await categoryCollection.find().toArray();
         res.json(categories);
@@ -234,7 +234,7 @@ const run = async () => {
 
 run().catch((err) => console.log(err));
 
-app.get("/api/", (req, res) => {
+app.get("/", (req, res) => {
   res.send("Welcome to evergreen nursery server.");
 });
 
