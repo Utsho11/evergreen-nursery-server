@@ -7,8 +7,8 @@ const port = process.env.PORT || 5000;
 
 const cors = require("cors");
 
-// app.use(cors({ origin: ["https://evergreen-nursery-client.vercel.app"] }));
-app.use(cors({ origin: "*" }));
+app.use(cors({ origin: ["https://evergreen-nursery-client.vercel.app"] }));
+// app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.2g6iibi.mongodb.net/nurseryDB?retryWrites=true&w=majority&appName=Cluster0`;
@@ -195,6 +195,64 @@ const run = async () => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
           statusCode: httpStatus.INTERNAL_SERVER_ERROR,
           message: "Failed to retrieve categories",
+          error: error.message,
+        });
+      }
+    });
+
+    app.post("/addCategory", async (req, res) => {
+      try {
+        const newProduct = req.body;
+        const result = await categoryCollection.insertOne(newProduct);
+        res.json({
+          statusCode: httpStatus.OK,
+          message: "Catagory added successfully",
+          insertedId: result.insertedId,
+        });
+      } catch (error) {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+          message: "Failed to add category",
+          error: error.message,
+        });
+      }
+    });
+
+    app.delete("/deleteCategory/:id", async (req, res) => {
+      try {
+        const id = new ObjectId(req.params.id);
+        const result = await categoryCollection.deleteOne({ _id: id });
+        res.json({
+          statusCode: httpStatus.OK,
+          message: "Category deleted successfully",
+        });
+      } catch (error) {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+          message: "Failed to delete category: ",
+          error: error.message,
+        });
+      }
+    });
+
+    app.put("/updateCategory/:id", async (req, res) => {
+      try {
+        const id = new ObjectId(req.params.id);
+
+        const updatedCategory = req.body;
+
+        const result = await categoryCollection.updateOne(
+          { _id: id },
+          { $set: updatedCategory }
+        );
+        res.json({
+          statusCode: httpStatus.OK,
+          message: "Category updated successfully",
+        });
+      } catch (error) {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+          message: "Failed to update category",
           error: error.message,
         });
       }
