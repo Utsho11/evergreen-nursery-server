@@ -7,7 +7,8 @@ const port = process.env.PORT || 5000;
 
 const cors = require("cors");
 
-app.use(cors({ origin: ["https://evergreen-nursery-client.vercel.app"] }));
+// app.use(cors({ origin: ["https://evergreen-nursery-client.vercel.app"] }));
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.2g6iibi.mongodb.net/nurseryDB?retryWrites=true&w=majority&appName=Cluster0`;
@@ -194,6 +195,27 @@ const run = async () => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
           statusCode: httpStatus.INTERNAL_SERVER_ERROR,
           message: "Failed to retrieve categories",
+          error: error.message,
+        });
+      }
+    });
+
+    app.put("/update-quantities", async (req, res) => {
+      const cart = req.body.items;
+
+      try {
+        // Iterate through the cart array and update each product
+        for (let item of cart) {
+          await productsCollection.updateOne(
+            { _id: new ObjectId(item.productId) },
+            { $inc: { quantity: -item.quantity } }
+          );
+        }
+
+        res.status(200).json({ message: "Quantities updated successfully" });
+      } catch (error) {
+        res.status(500).json({
+          message: "Failed to update quantities",
           error: error.message,
         });
       }
