@@ -1,0 +1,28 @@
+import { Model, Types } from "mongoose";
+import { USER_ROLE, USER_STATUS } from "./user.constant";
+
+export type TUser = {
+  _id?: Types.ObjectId;
+  name: string;
+  role: keyof typeof USER_ROLE;
+  email: string;
+  password: string;
+  location: string;
+  status: keyof typeof USER_STATUS;
+  mobileNumber?: string;
+  profilePhoto?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+
+export interface IUserModel extends Model<TUser> {
+  isUserExistsByEmail(id: string): Promise<TUser>;
+  isPasswordMatched(
+    plainTextPassword: string,
+    hashedPassword: string
+  ): Promise<boolean>;
+  isJWTIssuedBeforePasswordChanged(
+    passwordChangedTimestamp: Date,
+    jwtIssuedTimestamp: number
+  ): boolean;
+}
