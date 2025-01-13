@@ -1,12 +1,12 @@
-import { NextFunction, Request, Response } from 'express';
-import httpStatus from 'http-status';
-import { JwtPayload } from 'jsonwebtoken';
-import config from '../../../../../../Assignment/PlateShare/plateShare-server/src/app/config';
-import AppError from '../errors/AppError';
-import { catchAsync } from '../utils/catchAsync';
-import { USER_ROLE } from '../modules/User/user.constant';
-import { verifyToken } from '../utils/verifyJWT';
-import { User } from '../modules/User/user.model';
+import { NextFunction, Request, Response } from "express";
+import httpStatus from "http-status";
+import { JwtPayload } from "jsonwebtoken";
+import AppError from "../errors/AppError";
+import { catchAsync } from "../utils/catchAsync";
+import { USER_ROLE } from "../modules/User/user.constant";
+import { verifyToken } from "../utils/verifyJWT";
+import { User } from "../modules/User/user.model";
+import config from "../config";
 
 const auth = (...requiredRoles: (keyof typeof USER_ROLE)[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -14,7 +14,7 @@ const auth = (...requiredRoles: (keyof typeof USER_ROLE)[]) => {
 
     // checking if the token is missing
     if (!token) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+      throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized!");
     }
 
     const decoded = verifyToken(
@@ -22,34 +22,24 @@ const auth = (...requiredRoles: (keyof typeof USER_ROLE)[]) => {
       config.jwt_access_secret as string
     ) as JwtPayload;
 
-    const { role, email, iat } = decoded;
+    const { role, email } = decoded;
 
     // checking if the user is exist
     const user = await User.isUserExistsByEmail(email);
 
     if (!user) {
-      throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
+      throw new AppError(httpStatus.NOT_FOUND, "This user is not found !");
     }
     // checking if the user is already deleted
 
     const status = user?.status;
 
-    if (status === 'BLOCKED') {
-      throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked !');
-    }
-
-    if (
-      user.passwordChangedAt &&
-      User.isJWTIssuedBeforePasswordChanged(
-        user.passwordChangedAt,
-        iat as number
-      )
-    ) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
+    if (status === "BLOCKED") {
+      throw new AppError(httpStatus.FORBIDDEN, "This user is blocked !");
     }
 
     if (requiredRoles && !requiredRoles.includes(role)) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+      throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized");
     }
 
     req.user = decoded as JwtPayload;

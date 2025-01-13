@@ -42,10 +42,52 @@ const getOrder = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const createBlog = catchAsync(async (req, res) => {
+  const result = await UserServices.createBlog(req);
+  sendResponse(res, {
+    success: true,
+    statusCode: HttpStatusCode.Created,
+    message: "Blog created successfully",
+    data: result,
+  });
+});
+const getBlogByUser = catchAsync(async (req, res) => {
+  const result = await UserServices.getBlogByUser(req);
+  sendResponse(res, {
+    success: true,
+    statusCode: HttpStatusCode.Ok,
+    message: "Blog fetched successfully",
+    data: result,
+  });
+});
+
+const getSingleBlog = catchAsync(async (req, res) => {
+  const result = await UserServices.getSingleBlog(req);
+  sendResponse(res, {
+    success: true,
+    statusCode: HttpStatusCode.Ok,
+    message: "Blog fetched successfully",
+    data: result,
+  });
+});
+
+const deleteBlog = catchAsync(async (req, res) => {
+  await UserServices.deleteBlog(req);
+  sendResponse(res, {
+    success: true,
+    statusCode: HttpStatusCode.Ok,
+    message: "Blog deleted successfully",
+    data: null,
+  });
+});
 
 export const UserControllers = {
   createOrder,
   createReview,
+  createBlog,
   getUnreviewedCart,
   getOrder,
+  getBlogByUser,
+  deleteBlog,
+  getSingleBlog,
 };

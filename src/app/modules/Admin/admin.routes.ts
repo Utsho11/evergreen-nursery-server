@@ -23,4 +23,12 @@ router.patch(
   AdminControllers.changeUserStatus
 );
 
+router.patch(
+  "/change-blog-status",
+  auth(USER_ROLE.ADMIN),
+  AdminControllers.changeBlogStatus
+);
+
+router.get("/get-all-blogs", AdminControllers.getAllBlogs);
+
 export const AdminRoutes = router;

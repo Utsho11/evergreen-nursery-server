@@ -1,17 +1,17 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import { promisify } from 'util';
-import Handlebars from 'handlebars';
-import nodemailer from 'nodemailer';
-import config from '../../../../../../Assignment/PlateShare/plateShare-server/src/app/config';
-import AppError from '../errors/AppError';
-import httpStatus from 'http-status';
+import * as fs from "fs";
+import * as path from "path";
+import { promisify } from "util";
+import Handlebars from "handlebars";
+import nodemailer from "nodemailer";
+import AppError from "../errors/AppError";
+import httpStatus from "http-status";
+import config from "../config";
 
 const ReadFile = promisify(fs.readFile);
 
 const sendEmail = async (email: string, html: string, subject: string) => {
   const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
+    host: "smtp.gmail.com",
     port: 587,
     secure: false, // Use `true` for port 465, `false` for all other ports
     auth: {
@@ -38,7 +38,7 @@ const createEmailContent = async (data: object, templateType: string) => {
       process.cwd(),
       `src/views/${templateType}.template.hbs`
     );
-    const content = await ReadFile(templatePath, 'utf8');
+    const content = await ReadFile(templatePath, "utf8");
 
     const template = Handlebars.compile(content);
 

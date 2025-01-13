@@ -33,8 +33,30 @@ const changeUserStatus = catchAsync(async (req, res) => {
   });
 });
 
+const changeBlogStatus = catchAsync(async (req, res) => {
+  const result = await AdminServices.changeUserStatusIntoDB(req);
+  sendResponse(res, {
+    success: true,
+    statusCode: HttpStatusCode.Ok,
+    message: "Changed Blog Status successfully",
+    data: result,
+  });
+});
+
+const getAllBlogs = catchAsync(async (req, res) => {
+  const result = await AdminServices.getAllBlogs();
+  sendResponse(res, {
+    success: true,
+    statusCode: HttpStatusCode.Ok,
+    message: "All Blogs are fetched successfully",
+    data: result,
+  });
+});
+
 export const AdminControllers = {
   getAllTransactions,
   getAllUsers,
   changeUserStatus,
+  changeBlogStatus,
+  getAllBlogs,
 };

@@ -5,6 +5,7 @@ import config from "../../config";
 import { Order } from "./order.model";
 import { initiatePayment } from "../../utils/payment.utils";
 import { Review } from "./review.model";
+import { Blog } from "./blog.model";
 
 const registerUserIntoDB = async (req: Request) => {
   const data = req.body;
@@ -116,9 +117,46 @@ const getUnreviewedCartItems = async (userEmail: string) => {
 
 const getOrderFromDB = async (req: Request) => {
   const result = await Order.find({ "userInfo.email": req.user.email });
+  return result;
+};
 
-  console.log(result);
+const createBlog = async (req: Request) => {
+  const data = req.body;
+  const imgUrl = req.file?.path;
 
+  const blogData = {
+    ...data,
+    image: imgUrl,
+  };
+
+  const result = await Blog.create(blogData);
+  return result;
+};
+
+const getBlogByUser = async (req: Request) => {
+  const email = req.user.email; // Assuming req.user contains the logged-in user's email
+
+  const blogs = await Blog.find()
+    .populate({
+      path: "author",
+      match: { email },
+    })
+    .exec();
+
+  const filteredBlogs = blogs.filter((blog) => blog.author !== null);
+
+  return filteredBlogs;
+
+  // return result;
+};
+
+const getSingleBlog = async (req: Request) => {
+  const result = await Blog.findById(req.params.id);
+  return result;
+};
+
+const deleteBlog = async (req: Request) => {
+  const result = await Blog.findByIdAndDelete(req.params.id);
   return result;
 };
 
@@ -128,4 +166,8 @@ export const UserServices = {
   createReviewIntoDB,
   getUnreviewedCartItems,
   getOrderFromDB,
+  createBlog,
+  getBlogByUser,
+  deleteBlog,
+  getSingleBlog,
 };

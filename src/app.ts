@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import cors from "cors";
-import express, { Application, NextFunction, Request, Response } from "express";
+import express, {
+  Application,
+  ErrorRequestHandler,
+  NextFunction,
+  Request,
+  Response,
+} from "express";
 import httpStatus from "http-status";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import cookieParser from "cookie-parser";
@@ -10,7 +16,10 @@ import router from "./app/routes";
 const app: Application = express();
 
 const corsOptions = {
-  origin: ["http://localhost:5173"],
+  origin: [
+    "https://evergreen-nursery-client.vercel.app",
+    "https://evergreen-nursery-server.vercel.app",
+  ],
   credentials: true,
 };
 
@@ -32,7 +41,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
 });
 
 //global error handler
-app.use(globalErrorHandler);
+app.use(globalErrorHandler as ErrorRequestHandler);
 
 //handle not found
 app.use(notFound);
