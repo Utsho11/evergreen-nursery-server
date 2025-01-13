@@ -46,10 +46,21 @@ const refreshToken = catchAsync(async (req, res) => {
   });
 });
 
+const getAllReviews = catchAsync(async (req, res) => {
+  const result = await AuthServices.getAllReviewsFromDB();
+  sendResponse(res, {
+    success: true,
+    statusCode: HttpStatusCode.Ok,
+    message: "Review Fetched successfully",
+    data: result,
+  });
+});
+
 export const AuthControllers = {
   registerUser,
   loginUser,
   getMe,
   // changePassword,
   refreshToken,
+  getAllReviews,
 };

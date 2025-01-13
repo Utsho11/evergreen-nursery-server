@@ -10,7 +10,7 @@ export type TUser = {
   location: string;
   status: keyof typeof USER_STATUS;
   mobileNumber?: string;
-  profilePhoto?: string;
+  image?: string;
   createdAt?: Date;
   updatedAt?: Date;
 };

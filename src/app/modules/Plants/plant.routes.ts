@@ -33,4 +33,6 @@ router.delete(
   PlantControllers.deletePlantById
 );
 
+router.get("/get-reviews/:id", PlantControllers.getReviewsByPlantId);
+
 export const PlantRoutes = router;

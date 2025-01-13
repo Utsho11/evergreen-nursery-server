@@ -34,7 +34,7 @@ const deleteCategoryByIdFromDB = async (req: Request) => {
     throw new AppError(HttpStatusCode.NotFound, "Category not found!");
   }
 
-  await Category.deleteOne({ _id: categoryId });
+  await Category.findByIdAndDelete(categoryId);
 
   return null;
 };

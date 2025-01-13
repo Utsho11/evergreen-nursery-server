@@ -14,6 +14,7 @@ interface IOrder {
     quantity: number;
     discount: number;
     price: number;
+    reviewed: boolean;
   }>;
   totalPrice: number;
   status: string;
@@ -45,6 +46,7 @@ const OrderSchema: Schema = new Schema<IOrder>(
         quantity: { type: Number, required: true },
         discount: { type: Number, required: true },
         price: { type: Number, required: true },
+        reviewed: { type: Boolean, default: false },
       },
     ],
     totalPrice: {

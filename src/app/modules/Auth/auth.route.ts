@@ -24,6 +24,8 @@ router.get(
   AuthControllers.getMe
 );
 
+router.get("/get-review", auth(USER_ROLE.ADMIN), AuthControllers.getAllReviews);
+
 router.post(
   "/refresh-token",
   validateRequestCookies(AuthValidation.refreshTokenValidationSchema),

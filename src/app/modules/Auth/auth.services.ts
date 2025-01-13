@@ -5,6 +5,7 @@ import AppError from "../../errors/AppError";
 import { createToken } from "../../utils/verifyJWT";
 import config from "../../config";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { Review } from "../User/review.model";
 
 const loginUser = async (req: Request) => {
   // checking if the user is exist
@@ -105,8 +106,14 @@ const refreshToken = async (token: string) => {
   };
 };
 
+const getAllReviewsFromDB = async () => {
+  const reviews = await Review.find();
+  return reviews;
+};
+
 export const AuthServices = {
   loginUser,
   getMeFromDB,
   refreshToken,
+  getAllReviewsFromDB,
 };

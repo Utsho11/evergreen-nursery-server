@@ -18,6 +18,8 @@ const userSchema = new Schema<TUser, IUserModel>(
     },
     email: {
       type: String,
+      unique: true,
+      trim: true,
       required: true,
       match: [
         /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
@@ -41,7 +43,7 @@ const userSchema = new Schema<TUser, IUserModel>(
       type: String,
       required: true,
     },
-    profilePhoto: {
+    image: {
       type: String,
       default: null,
     },

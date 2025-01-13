@@ -4,6 +4,7 @@ import { createToken } from "../../utils/verifyJWT";
 import config from "../../config";
 import { Order } from "./order.model";
 import { initiatePayment } from "../../utils/payment.utils";
+import { Review } from "./review.model";
 
 const registerUserIntoDB = async (req: Request) => {
   const data = req.body;
@@ -67,7 +68,64 @@ const createOrderIntoDB = async (req: Request) => {
   return sessionData;
 };
 
+const createReviewIntoDB = async (req: Request) => {
+  const payload = await req.body;
+  const { itemId, ...rest } = payload;
+
+  await Order.updateOne(
+    { "cartItems._id": itemId },
+    { $set: { "cartItems.$.reviewed": true } }
+  );
+
+  const reviewData = {
+    ...rest,
+    user: req.user._id,
+  };
+  const result = await Review.create(reviewData);
+
+  // console.log(result);
+
+  return result;
+};
+
+const getUnreviewedCartItems = async (userEmail: string) => {
+  try {
+    // Step 1: Find all orders for the specific user
+    const userOrders = await Order.find({
+      "userInfo.email": userEmail,
+    });
+
+    if (!userOrders || userOrders.length === 0) {
+      // console.log("No orders found for the user.");
+      return [];
+    }
+
+    // Step 2: Extract unreviewed cart items from all orders
+    const unreviewedCartItems = userOrders.flatMap((order) =>
+      order.cartItems.filter((item) => item.reviewed === false)
+    );
+
+    // console.log("Unreviewed Cart Items:", unreviewedCartItems);
+
+    return unreviewedCartItems;
+  } catch {
+    // console.error("Error fetching unreviewed cart items:", error);
+    throw new Error("Could not fetch unreviewed cart items.");
+  }
+};
+
+const getOrderFromDB = async (req: Request) => {
+  const result = await Order.find({ "userInfo.email": req.user.email });
+
+  console.log(result);
+
+  return result;
+};
+
 export const UserServices = {
   registerUserIntoDB,
   createOrderIntoDB,
+  createReviewIntoDB,
+  getUnreviewedCartItems,
+  getOrderFromDB,
 };

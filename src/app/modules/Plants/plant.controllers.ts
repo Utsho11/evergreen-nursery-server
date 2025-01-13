@@ -58,10 +58,23 @@ const updatePlant = catchAsync(async (req, res) => {
   });
 });
 
+const getReviewsByPlantId = catchAsync(async (req, res) => {
+  const plantId = req.params.id;
+  const result = await PlantServices.getReviewsByPlantId(plantId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: HttpStatusCode.Ok,
+    message: "Reviews fetched successfully",
+    data: result,
+  });
+});
+
 export const PlantControllers = {
   createPlant,
   getAllPlant,
   getPlantById,
   updatePlant,
   deletePlantById,
+  getReviewsByPlantId,
 };

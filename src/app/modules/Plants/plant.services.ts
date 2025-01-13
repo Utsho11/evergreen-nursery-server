@@ -4,6 +4,7 @@ import { HttpStatusCode } from "axios";
 import { Plant } from "./plant.model";
 import { PlantQueryBuilder } from "../../builder/QueryBuilder";
 import { TImageFiles } from "../../interfaces/image.interface";
+import { Review } from "../User/review.model";
 
 const createPlantIntoDB = async (req: Request) => {
   const data = req.body;
@@ -48,7 +49,7 @@ const getAllPlantFromDB = async (req: Request) => {
 
 const getPlantByIdFromDB = async (req: Request) => {
   const plantId = req.params.id;
-  const result = await Plant.findById(plantId);
+  const result = await Plant.findById(plantId).populate("category");
   return result;
 };
 
@@ -80,10 +81,16 @@ const updatePlantIntoDB = async (req: Request) => {
   return plant;
 };
 
+const getReviewsByPlantId = async (plantId: string) => {
+  const result = await Review.find({ plantId: plantId }).populate("user");
+  return result;
+};
+
 export const PlantServices = {
   createPlantIntoDB,
   getAllPlantFromDB,
   updatePlantIntoDB,
   deletePlantByIdFromDB,
   getPlantByIdFromDB,
+  getReviewsByPlantId,
 };

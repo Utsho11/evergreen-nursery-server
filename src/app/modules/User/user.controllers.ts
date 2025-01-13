@@ -13,6 +13,39 @@ const createOrder = catchAsync(async (req, res) => {
   });
 });
 
+const createReview = catchAsync(async (req, res) => {
+  const result = await UserServices.createReviewIntoDB(req);
+  sendResponse(res, {
+    success: true,
+    statusCode: HttpStatusCode.Created,
+    message: "Review created successfully",
+    data: result,
+  });
+});
+
+const getUnreviewedCart = catchAsync(async (req, res) => {
+  const result = await UserServices.getUnreviewedCartItems(req.user.email);
+  sendResponse(res, {
+    success: true,
+    statusCode: HttpStatusCode.Ok,
+    message: "Review fetched successfully",
+    data: result,
+  });
+});
+
+const getOrder = catchAsync(async (req, res) => {
+  const result = await UserServices.getOrderFromDB(req);
+  sendResponse(res, {
+    success: true,
+    statusCode: HttpStatusCode.Ok,
+    message: "Order fetched successfully",
+    data: result,
+  });
+});
+
 export const UserControllers = {
   createOrder,
+  createReview,
+  getUnreviewedCart,
+  getOrder,
 };
