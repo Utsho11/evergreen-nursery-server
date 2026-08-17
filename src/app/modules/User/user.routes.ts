@@ -7,7 +7,11 @@ import { parseBody } from "../../middlewares/bodyParser";
 
 const router = express.Router();
 
-router.post("/create-order", UserControllers.createOrder);
+router.post(
+  "/create-order",
+  auth(USER_ROLE.CUSTOMER, USER_ROLE.ADMIN),
+  UserControllers.createOrder
+);
 router.post(
   "/create-review",
   auth(USER_ROLE.CUSTOMER, USER_ROLE.ADMIN),

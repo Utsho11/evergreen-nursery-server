@@ -4,23 +4,47 @@ import sendResponse from "../../utils/sendResponse";
 import { UserServices } from "../User/user.services";
 import { AuthServices } from "./auth.services";
 
+import config from "../../config";
+
 const registerUser = catchAsync(async (req, res) => {
   const result = await UserServices.registerUserIntoDB(req);
+  const { refreshToken, accessToken } = result;
+
+  res.cookie("refreshToken", refreshToken, {
+    secure: config.NODE_ENV === "production",
+    httpOnly: true,
+    sameSite: config.NODE_ENV === "production" ? "none" : "lax",
+  });
+
   sendResponse(res, {
     success: true,
     statusCode: HttpStatusCode.Created,
     message: "User registered successfully",
-    data: result, // Return the created user object as data.
+    data: {
+      accessToken,
+      refreshToken,
+    },
   });
 });
 
 const loginUser = catchAsync(async (req, res) => {
   const result = await AuthServices.loginUser(req);
+  const { refreshToken, accessToken } = result;
+
+  res.cookie("refreshToken", refreshToken, {
+    secure: config.NODE_ENV === "production",
+    httpOnly: true,
+    sameSite: config.NODE_ENV === "production" ? "none" : "lax",
+  });
+
   sendResponse(res, {
     success: true,
     statusCode: HttpStatusCode.Ok,
     message: "User logged in successfully",
-    data: result, // Return the created user object as data.
+    data: {
+      accessToken,
+      refreshToken,
+    },
   });
 });
 

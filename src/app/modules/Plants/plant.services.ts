@@ -24,23 +24,15 @@ const createPlantIntoDB = async (req: Request) => {
 const getAllPlantFromDB = async (req: Request) => {
   const query = req.query;
 
-  // Initialize the page and limit
-  const page = Number(query.page) || 1; // Default to 1 if no page is provided
-  const limit = Number(query.limit) || 10; // Default to 10 items per page if no limit is provided
-
-  const skip = (page - 1) * limit; // Calculate the skip value for pagination
-
   const itemQuery = new PlantQueryBuilder(
     Plant.find().populate("category"),
     query
   )
-    .search(["title", "description", "category.name"])
+    .search(["title", "description"])
     .filter()
     .sort()
     .fields()
     .paginate();
-
-  itemQuery.modelQuery = itemQuery.modelQuery.skip(skip).limit(limit);
 
   const result = await itemQuery.modelQuery;
 
@@ -69,11 +61,16 @@ const deletePlantByIdFromDB = async (req: Request) => {
 const updatePlantIntoDB = async (req: Request) => {
   const plantId = req.params.id;
   const updateData = req.body;
-  const imgUrl = req.file?.path;
-  const plantData = {
-    image: imgUrl,
+  const imgUrls = req.files;
+  const { files } = (imgUrls as TImageFiles) || {};
+
+  const plantData: Record<string, unknown> = {
     ...updateData,
   };
+
+  if (files && files.length > 0) {
+    plantData.images = files.map((image) => image.path);
+  }
 
   const plant = await Plant.findByIdAndUpdate(plantId, plantData, {
     new: true,

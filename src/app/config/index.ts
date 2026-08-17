@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config({ path: path.join((process.cwd(), '.env')) });
+dotenv.config({ path: path.join(process.cwd(), '.env') });
 
 export default {
   NODE_ENV: process.env.NODE_ENV,
@@ -28,4 +28,6 @@ export default {
   signature_key: process.env.SIGNATURE_KEY,
   payment_url: process.env.PAYMENT_URL,
   verify_payment_url: process.env.VERIFY_PAYMENT_URL,
+  client_url: process.env.CLIENT_URL || "http://localhost:5173",
+  server_url: process.env.SERVER_URL || "http://localhost:5000",
 };

@@ -17,6 +17,9 @@ const app: Application = express();
 
 const corsOptions = {
   origin: [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:5173",
     "https://evergreen-nursery-client.vercel.app",
     "https://evergreen-nursery-server.vercel.app",
   ],

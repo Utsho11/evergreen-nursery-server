@@ -43,9 +43,9 @@ const changeBlogStatus = async (req: Request) => {
   const { blogId } = req.body;
   // console.log(req.body);
 
-  const blog = await User.findById(blogId);
+  const blog = await Blog.findById(blogId);
 
-  // console.log(user);
+  // console.log(blog);
 
   if (blog?.status === USER_STATUS.ACTIVE) {
     await Blog.findByIdAndUpdate(
